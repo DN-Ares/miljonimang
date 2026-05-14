@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Miljonimäng - Mänguajalugu{% endblock %}
+{% block content %}
+<div class="history-container">
+    <h1>Mänguajalugu</h1>
+
+    {% if results %}
+    <div class="history-list">
+        {% for r in results %}
+        <div class="history-card {% if r.won %}history-won{% endif %}">
+            <div class="history-header">
+                <span class="history-assignment">{{ r.assignment_title or r.assignment_id }}</span>
+                <span class="history-date">{{ r.date }}</span>
+            </div>
+            <div class="history-stats">
+                <div class="stat">
+                    <span class="stat-label">Tulemus</span>
+                    <span class="stat-value {% if r.won %}text-gold{% endif %}">{{ "{:,}".format(r.score).replace(",", " ") }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Vastatud</span>
+                    <span class="stat-value">{{ r.questions_count }}/{{ 15 }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value {% if r.won %}text-gold{% endif %}">{% if r.won %}Võitis{% else %}Kaotas{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Mänge pole veel salvestatud. Mängi mõni mäng, et siia tulemusi näha.</p>
+        <a href="/" class="btn btn-primary">Vali ülesanne</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

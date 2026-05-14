@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Miljonimäng - Tulemus{% endblock %}
+{% block content %}
+<div class="result-container">
+    <h1>Mängu tulemus</h1>
+    <div class="result-card">
+        {% if game_won %}
+        <div class="result-icon won">&#x1F3C6;</div>
+        <h2>Palju õnne!</h2>
+        <p>Vastasid kõikidele küsimustele õigesti!</p>
+        {% elif game_over %}
+        <div class="result-icon lost">&#x1F614;</div>
+        <h2>Mäng läbi</h2>
+        <p>Vastasid valesti.</p>
+        {% endif %}
+        <div class="score-display">
+            <span class="score-label">Sinu punktisumma:</span>
+            <span class="score-value">{{ "{:,}".format(score).replace(",", " ") }}</span>
+        </div>
+        <div class="score-bar">
+            <div class="score-fill" style="width: {% if total > 0 %}{{ (score / total) * 100 }}{% else %}0{% endif %}%"></div>
+        </div>
+        <div class="result-actions">
+            <a href="/" class="btn btn-primary">Vali ülesanne</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

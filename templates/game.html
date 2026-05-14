@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Miljonimäng - {{ assignment_title }}{% endblock %}
+{% block content %}
+<div id="game-app" data-assignment-id="{{ assignment_id }}" data-assignment-title="{{ assignment_title }}">
+    <div class="game-header">
+        <h1>{{ assignment_title }}</h1>
+        <div class="game-header-actions">
+            <button class="btn btn-sm btn-outline" id="btn-toggle-assignment">Näita ülesannet</button>
+            <button class="btn btn-sm btn-outline" id="btn-regenerate">Uued küsimused</button>
+        </div>
+    </div>
+
+    <div id="assignment-panel" class="assignment-panel hidden">
+        <div class="assignment-content" id="assignment-content"></div>
+        <div class="assignment-files" id="assignment-files"></div>
+    </div>
+
+    <div class="game-layout">
+        <aside class="scoreboard" id="scoreboard">
+            <h3>Punktitabel</h3>
+            <div class="points-list" id="points-list"></div>
+            <div class="current-score">
+                <span>Hetkeseis:</span>
+                <strong id="current-score-display">0</strong>
+            </div>
+        </aside>
+
+        <section class="game-area">
+            <div id="loading-screen" class="loading-screen">
+                <div class="loading-spinner"></div>
+                <p>Genereerin küsimusi...</p>
+                <small>See võib võtta mõne hetke</small>
+            </div>
+
+            <div id="question-screen" class="question-screen hidden">
+                <div class="question-header">
+                    <span class="question-number" id="question-number">Küsimus 1/15</span>
+                    <span class="question-points" id="question-points">100 punkti</span>
+                </div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-grid" id="options-grid"></div>
+                <div class="lifelines" id="lifelines">
+                    <button class="lifeline-btn" data-type="fifty_fifty" id="lifeline-50">
+                        <span class="lifeline-icon">50:50</span>
+                    </button>
+                    <button class="lifeline-btn" data-type="ask_audience" id="lifeline-audience">
+                        <span class="lifeline-icon">👥</span>
+                        <span class="lifeline-label">Küsi publikult</span>
+                    </button>
+                    <button class="lifeline-btn" data-type="ask_ai" id="lifeline-ai">
+                        <span class="lifeline-icon">🤖</span>
+                        <span class="lifeline-label">Küsi AI-lt</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="feedback-screen" class="feedback-screen hidden">
+                <div class="feedback-card" id="feedback-card"></div>
+            </div>
+
+            <div id="gameover-screen" class="gameover-screen hidden">
+                <div class="gameover-card">
+                    <h2 id="gameover-title">Mäng läbi!</h2>
+                    <p id="gameover-score">Sinu punktisumma: 0</p>
+                    <div id="won-message" class="hidden">
+                        <p class="congrats">Palju õnne! Võitsid miljonimängu!</p>
+                    </div>
+                    <div class="gameover-actions">
+                        <button class="btn btn-primary" id="btn-restart">Mängi uuesti</button>
+                        <a href="/" class="btn btn-secondary">Vali teine ülesanne</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="audience-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h3>Publik hääletas</h3>
+                    <div class="audience-bars" id="audience-bars"></div>
+                    <button class="btn btn-primary" id="close-audience">Sulge</button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax.io/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/html.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="{{ url_for('static', filename='game.js') }}"></script>
+{% endblock %}

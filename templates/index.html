@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Miljonimäng - Ülesande valik{% endblock %}
+{% block content %}
+<div class="assignment-list">
+    <div class="hero">
+        <h1>Miljonimäng</h1>
+        <p class="hero-subtitle">AI-põhine ülesande valideerimise rakendus</p>
+        <p class="hero-desc">Vali ülesanne, et kontrollida oma arusaamist lahendusest miljonimängu formaadis.</p>
+    </div>
+
+    <h2>Vali ülesanne</h2>
+    {% if assignments %}
+    <div class="assignment-grid">
+        {% for a in assignments %}
+        <a href="/select/{{ a.id }}" class="assignment-card">
+            <span class="assignment-id">{{ a.id }}</span>
+            <span class="assignment-title">{{ a.title }}</span>
+            <span class="assignment-arrow">&rarr;</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Ülesandeid ei leitud. Lisa need input/ kausta.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
