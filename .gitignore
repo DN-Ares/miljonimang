@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+data/results.json
+data/cache/
+server_test.log
+server.log
+server_err.log
+server_out.log
+.DS_Store
+Thumbs.db
