@@ -1,0 +1,8 @@
+[
+  { "name": "Sülearvuti", "category": "Elektroonika", "price": 999, "quantity": 10 },
+  { "name": "Hiir", "category": "Elektroonika", "price": 25, "quantity": 50 },
+  { "name": "Klaviatuur", "category": "Elektroonika", "price": 75, "quantity": 30 },
+  { "name": "Monitor", "category": "Elektroonika", "price": 399, "quantity": 15 },
+  { "name": "Raamat", "category": "Kirjandus", "price": 19, "quantity": 100 },
+  { "name": "Märkmik", "category": "Kontor", "price": 5, "quantity": 200 }
+]
