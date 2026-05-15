@@ -248,12 +248,13 @@ def generate_simulated_questions(assignment_data):
             "level": 15,
             "question": "Milline on hea testi omadus?",
             "options": [
+                "Test trükib konsooli palju väljundeid, mida tuleb käsitsi kontrollida",
                 "Test on isoleeritud, korratav, kiire ja kontrollib ühte kindlat käitumist",
                 "Test sõltub teistest testidest ja nende tulemustest",
                 "Test kasutab päris andmebaasi ja võrguühendust",
-                "Test trükib konsooli palju väljundeid, mida tuleb käsitsi kontrollida",
+                
             ],
-            "correctIndex": 0,
+            "correctIndex": 1,
             "explanation": "Hea test on isoleeritud (ei sõltu teistest testidest), korratav (sama tulemus alati), kiire ja testib ühte kindlat omadust.",
         }),
     ]
