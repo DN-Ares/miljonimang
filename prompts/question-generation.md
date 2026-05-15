@@ -1,7 +1,7 @@
 # Prompt: Küsimuste genereerimine
 
 ## Roll
-Sa oled haridustehnoloog, kes koostab valikvastustega küsimusi, et kontrollida õppija arusaamist ülesande lahendusest.
+Sa oled haridustehnoloog, kes koostab valikvastustega küsimusi programmeerimise testimise teemal.
 
 ## Sisend
 Saad järgmise teabe:
@@ -9,7 +9,7 @@ Saad järgmise teabe:
 - **Lahenduse failid:** {solution_files}
 
 ## Ülesanne
-Koosta 15 valikvastustega küsimust miljonimängu jaoks, mis kontrollivad, kas õppija mõistab antud ülesande lahendust.
+Koosta 15 valikvastustega küsimust miljonimängu jaoks, mis kontrollivad õppija teadmisi **programmeerimise testimisest** (ühiktestid, integratsoonitestid, TDD, mockimine, koodikate jne).
 
 ## Nõuded küsimustele
 
@@ -17,29 +17,30 @@ Koosta 15 valikvastustega küsimust miljonimängu jaoks, mis kontrollivad, kas �
 1. Igal küsimusel peab olema 4 vastusevarianti (A, B, C, D).
 2. Ainult üks vastus tohib olla õige.
 3. Küsimused peavad kontrollima arusaamist, MITTE ainult mälu.
-4. Küsimused ei tohi olla stiilis "Mis faili nimi oli lahenduses?".
+4. Kõik küsimused peavad olema seotud **programmeerimise testimise** teemaga.
 5. Iga küsimusega peab kaasas olema lühike selgitus, miks õige vastus on õige.
 6. Vastused peavad olema eesti keeles.
+7. **Õige vastus (correctIndex) ei tohi olla alati 0 ega alati samas positsioonis – varieeri õige vastuse asukohta!**
 
 ### Raskusastmed
 
 #### Küsimused 1–5 (Lihtsad)
-Kontrollivad põhimõisteid ja ülesande üldist arusaamist.
-- Mida see lahendus teeb?
-- Millist tehnoloogiat/moodulit milleski kasutatakse?
-- Mis on ülesande eesmärk?
+Kontrollivad testimise põhimõisteid.
+- Mis on unit test?
+- Mida tähendab TDD?
+- Milliseid testimise teeke kasutatakse?
 
 #### Küsimused 6–10 (Keskmised)
-Kontrollivad lahenduse sisemist loogikat.
-- Miks mingit meetodit/funktsiooni kasutatakse?
-- Mis juhtub teatud tingimustel?
-- Kuidas andmed liiguvad?
+Kontrollivad testimise praktilisi aspekte.
+- Kuidas testid kirjutada?
+- Mida teevad erinevad assert meetodid?
+- Mis on mockimine ja fixture-d?
 
 #### Küsimused 11–15 (Rasked)
-Kontrollivad sügavamat arusaamist, vigade leidmist ja alternatiive.
-- Milline osa võib probleeme tekitada?
-- Kuidas saaks lahendust paremaks muuta?
-- Millised on turvariskid?
+Kontrollivad sügavamat arusaamist testimisest.
+- Mis vahe on erinevatel testitüüpidel?
+- Kuidas tõlgendada koodikatte tulemusi?
+- Millised on testimise head tavad?
 
 ## Väljundformaat
 Vastus peab olema JSON-kujul, mis on esitatud json-blokina:
@@ -55,14 +56,14 @@ Vastus peab olema JSON-kujul, mis on esitatud json-blokina:
       "Variant C",
       "Variant D"
     ],
-    "correctIndex": 0,
+    "correctIndex": 2,
     "explanation": "Selgitus, miks õige vastus on õige."
   }
 ]
 ```
 
 - `level` on küsimuse number 1–15.
-- `correctIndex` on õige vastuse indeks (0–3) vastuste massiivis.
+- `correctIndex` on õige vastuse indeks (0–3) vastuste massiivis – **varieeri seda, ära kasuta alati sama väärtust**.
 - `explanation` on lühike selgitus, miks see vastus on õige.
 
 Genereeri täpselt 15 küsimust.

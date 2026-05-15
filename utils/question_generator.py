@@ -37,7 +37,7 @@ def generate_questions_with_ai(assignment_data, api_key=None):
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Sa oled haridustehnoloog, kes koostab valikvastustega küsimusi."},
+                {"role": "system", "content": "Sa oled haridustehnoloog, kes koostab valikvastustega küsimusi programmeerimise testimise teemal. Õige vastuse indeks peab olema varieeruv (mitte alati 0)."},
                 {"role": "user", "content": prompt},
             ],
             temperature=0.7,
@@ -58,198 +58,204 @@ def generate_questions_with_ai(assignment_data, api_key=None):
         return None
 
 
+def _shuffle_options(question):
+    options = question["options"]
+    correct = options[question["correctIndex"]]
+    random.shuffle(options)
+    question["correctIndex"] = options.index(correct)
+    return question
+
+
 def generate_simulated_questions(assignment_data):
     title = assignment_data["id"]
-    content = assignment_data["content"]
     files = list(assignment_data["solution_files"].keys())
 
     has_html = any(f.endswith(".html") for f in files)
     has_css = any(f.endswith(".css") for f in files)
     has_js = any(f.endswith(".js") for f in files)
     has_py = any(f.endswith(".py") for f in files)
-    has_json_file = any(f.endswith(".json") for f in files)
 
     questions = [
-        {
+        _shuffle_options({
             "level": 1,
-            "question": f"Mis on ülesande {title} põhieesmärk?",
+            "question": "Mis on ühiktesti (unit test) peamine eesmärk?",
             "options": [
-                f"Lahendada ülesanne {title} vastavalt assignment.md nõuetele",
-                "Luua uus programmeerimiskeel",
-                "Testida andmebaasi ühendust",
-                "Kirjutada dokumentatsioon",
+                "Kontrollida ühe väikse funktsiooni või meetodi korrektsust eraldiseisvalt",
+                "Testida kogu süsteemi tervikuna",
+                "Kontrollida kasutajaliidese välimust",
+                "Testida andmebaasi jõudlust",
             ],
             "correctIndex": 0,
-            "explanation": f"Ülesande {title} eesmärk on täita assignment.md failis toodud nõudeid.",
-        },
-        {
+            "explanation": "Ühiktestid testivad väikseimaid koodiühikuid (funktsioone/meetodeid) isoleeritult.",
+        }),
+        _shuffle_options({
             "level": 2,
-            "question": "Milliseid faile kasutatakse selles lahenduses?",
+            "question": "Mida tähendab TDD (Test-Driven Development)?",
             "options": [
-                ", ".join(files[:3]) if files else "Puuduvad failid",
-                "ainult .exe failid",
-                "mingid pildifailid",
-                "puuduvad failid, lahendus on ainult mälus",
+                "Kõigepealt kirjutatakse testid, seejärel realiseeritakse funktsionaalsus",
+                "Kõigepealt kirjutatakse kood, seejärel testid",
+                "Testid kirjutatakse alles pärast seda, kui kood on tootmisse viidud",
+                "Testide kirjutamine ei ole TDD-s oluline",
             ],
             "correctIndex": 0,
-            "explanation": "Lahendus koosneb failidest: " + ", ".join(files),
-        },
-        {
+            "explanation": "TDD puhul kirjutatakse esmalt testid, mis ebaõnnestuvad, seejärel realiseeritakse piisavalt koodi testide läbimiseks.",
+        }),
+        _shuffle_options({
             "level": 3,
-            "question": "Millist programmeerimiskeelt selle ülesande lahendus peamiselt kasutab?",
+            "question": "Millist Pythoni teeki kasutatakse enim unit-testide kirjutamiseks?",
             "options": [
-                "Python" if has_py else "JavaScript",
-                "C++",
-                "Java",
-                "Ruby",
+                "unittest",
+                "numpy",
+                "flask",
+                "matplotlib",
             ],
             "correctIndex": 0,
-            "explanation": "Lahendus kasutab " + ("Pythonit" if has_py else "JavaScripti") + " põhiloogika jaoks.",
-        },
-        {
+            "explanation": "Pythoni sisseehitatud unittest teek on kõige levinum valik ühiktestide kirjutamiseks.",
+        }),
+        _shuffle_options({
             "level": 4,
-            "question": "Miks on oluline lugeda assignment.md faili enne lahendamist?",
+            "question": "Mida tähendab mockimine (mocking) testide kontekstis?",
             "options": [
-                "Et mõista ülesande nõudeid ja hindamiskriteeriume",
-                "Sest ilma selleta ei tööta kood",
-                "See on ainult ilu pärast",
-                "Et teada saada, millist värvi nuppe kasutada",
+                "Päris objektide asendamine simuleeritud objektidega, et isoleerida testitavat koodi",
+                "Testide naeruvääristamine",
+                "Testide automaatne genereerimine",
+                "Koodi koopia loomine enne testimist",
             ],
             "correctIndex": 0,
-            "explanation": "assignment.md sisaldab ülesande püstitust, nõudeid ja hindamiskriteeriume.",
-        },
-        {
+            "explanation": "Mockid asendavad sõltuvused (nt API kutsed, andmebaas) simuleeritud objektidega, et testida ainult ühte koodi osa.",
+        }),
+        _shuffle_options({
             "level": 5,
-            "question": "Kuidas on lahenduse failid omavahel seotud?",
+            "question": "Milline on õige järjekord testi kirjutamisel TDD-s?",
             "options": [
-                "HTML viitab CSS-ile ja JavaScriptile, mis töötlevad kasutaja sisendit",
-                "Failid ei ole üksteisega seotud",
-                "Kõik failid on koopiaid üksteisest",
-                "CSS fail käivitab JavaScripti",
+                "Kirjuta ebaõnnestuv test -> kirjuta minimaalne kood testi läbimiseks -> refaktoreeri",
+                "Kirjuta kood -> kirjuta test -> refaktoreeri",
+                "Kirjuta test ja kood korraga",
+                "Refaktoreeri -> kirjuta test -> kirjuta kood",
             ],
             "correctIndex": 0,
-            "explanation": "Tüüpiliselt HTML laeb CSS-i stiilideks ja JavaScripti funktsionaalsuseks.",
-        },
-        {
+            "explanation": "TDD tsükkel on: Red (kirjuta ebaõnnestuv test) -> Green (kirjuta piisavalt koodi) -> Refactor (paranda koodi struktuuri).",
+        }),
+        _shuffle_options({
             "level": 6,
-            "question": "Miks tuleb kasutaja sisend enne töötlemist valideerida?",
+            "question": "Mida mõõdab testide koodikatte (code coverage) protsent?",
             "options": [
-                "Et vältida vigaseid andmeid ja turvariske",
-                "Sest muidu läheb andmebaas katki",
-                "See pole vajalik, kui kasutaja on usaldusväärne",
-                "Et programm ilusti välja näeks",
+                "Kui suur osa lähtekoodist käivitatakse testide käigus",
+                "Kui palju teste on koodi kohta kirjutatud",
+                "Kui kiiresti testid jooksevad",
+                "Kui palju vigu testid leiavad",
             ],
             "correctIndex": 0,
-            "explanation": "Sisendi valideerimine hoiab ära vead ja turvaprobleemid nagu XSS.",
-        },
-        {
+            "explanation": "Koodikatteprotsent näitab, kui suur osa koodiridadest/testitavatest harudest testidega kaetud on.",
+        }),
+        _shuffle_options({
             "level": 7,
-            "question": "Mis juhtub, kui üks vajalikest failidest puudub?",
+            "question": "Mis on integratsoonitestide (integration tests) eesmärk?",
             "options": [
-                "Rakendus võib töötada osaliselt või mitte üldse",
-                "Rakendus töötab alati, sõltumata failidest",
-                "See ei oma tähtsust, sest failid laaditakse serverist",
-                "Tekib automaatselt uus fail",
+                "Kontrollida, kas erinevad süsteemi osad töötavad koos õigesti",
+                "Testida ainult ühte funktsiooni",
+                "Testida kasutajaliidese disaini",
+                "Kontrollida koodi stiili",
             ],
             "correctIndex": 0,
-            "explanation": "Puuduv fail võib põhjustada veateateid või funktsionaalsuse puudumist.",
-        },
-        {
+            "explanation": "Integratsioonitestid kontrollivad, kas erinevad moodulid, teenused või komponendid koos töötades annavad õige tulemuse.",
+        }),
+        _shuffle_options({
             "level": 8,
-            "question": "Kuidas toimub andmevahetus erinevate lahenduse osade vahel?",
+            "question": "Mida teeb assertEqual(a, b) unittestis?",
             "options": [
-                "Funktsioonid kutsuvad üksteist välja ja edastavad parameetreid",
-                "Andmeid hoitakse paberkandjal",
-                "Andmeid saadetakse e-mailiga",
-                "Andmevahetust ei toimu, iga osa töötab iseseisvalt",
+                "Kontrollib, kas a ja b on võrdsed; kui ei ole, siis test ebaõnnestub",
+                "Omistab muutujale a väärtuse b",
+                "Kontrollib, kas a ja b on erinevad",
+                "Loob uue testi",
             ],
             "correctIndex": 0,
-            "explanation": "Funktsioonid ja moodulid vahetavad andmeid parameetrite ja tagastusväärtuste kaudu.",
-        },
-        {
+            "explanation": "assertEqual kontrollib, et a == b. Kui võrdus ei kehti, visatakse AssertionError ja test loetakse ebaõnnestunuks.",
+        }),
+        _shuffle_options({
             "level": 9,
-            "question": "Millist sündmuste töötlemise meetodit lahenduses kasutatakse?",
+            "question": "Millist käsku kasutatakse pytest-is testide käivitamiseks?",
             "options": [
-                "addEventListener või sarnast sündmuste kuulamise mehhanismi",
-                "Tsükli abil pidevat kontrolli",
-                "Funktsiooni setTimeout",
-                "Sündmusi ei töödelda üldse",
+                "pytest",
+                "python test",
+                "run test",
+                "pytest-run",
             ],
             "correctIndex": 0,
-            "explanation": "addEventListener võimaldab reageerida kasutaja tegevustele (klikk, submit jne).",
-        },
-        {
+            "explanation": "pytest on nii teegi nimi kui ka CLI käsk testide käivitamiseks.",
+        }),
+        _shuffle_options({
             "level": 10,
-            "question": "Kuidas lahendus käsitleb erijuhtumeid (näiteks tühja sisendit)?",
+            "question": "Milleks kasutatakse setUp() meetodit unittestis?",
             "options": [
-                "Kontrollitakse tingimuslausega ja kuvatakse veateade",
-                "Erijuhtumeid ignoreeritakse",
-                "Programm lõpetab töö veateatega",
-                "Kasutajalt küsitakse uuesti ilma kontrollita",
+                "Ettevalmistavate toimingute tegemiseks enne iga testi käivitamist",
+                "Testide tulemuste kokkuvõtte tegemiseks",
+                "Testitava koodi seadistamiseks tootmiskeskkonnas",
+                "Testide automaatseks käivitamiseks",
             ],
             "correctIndex": 0,
-            "explanation": "Korralik lahendus kontrollib sisendit ja teavitab kasutajat vigadest.",
-        },
-        {
+            "explanation": "setUp() käivitatakse enne iga testimeetodit ja seda kasutatakse testide jaoks vajaliku keskkonna ettevalmistamiseks.",
+        }),
+        _shuffle_options({
             "level": 11,
-            "question": "Milline turvarisk võib kaasneda innerHTML kasutamisega?",
+            "question": "Mida tähendab testide puhul 'false positive'?",
             "options": [
-                "XSS (Cross-Site Scripting) rünnak",
-                "Andmebaasi kustutamine",
-                "Serveri ülekoormus",
-                "Paroolide lekkimine",
+                "Test näitab viga, aga tegelikult on kood korrektne",
+                "Test läbitakse, aga kood on vigane",
+                "Testi tulemus on tundmatu",
+                "Testi ei käivitata üldse",
             ],
             "correctIndex": 0,
-            "explanation": "innerHTML võimaldab pahatahtliku koodi sisestamist lehele (XSS).",
-        },
-        {
+            "explanation": "False positive (valepositiivne) tähendab, et test ebaõnnestub (näitab viga), kuigi testitav kood on tegelikult korrektne.",
+        }),
+        _shuffle_options({
             "level": 12,
-            "question": "Kuidas saaks seda lahendust skaleeritavamaks muuta?",
+            "question": "Miks on oluline testide puhul kasutada fixture-id?",
             "options": [
-                "Eraldada loogika väiksemateks funktsioonideks ja mooduliteks",
-                "Lisada rohkem CSS-animatsioone",
-                "Kasutada rohkem globaalseid muutujaid",
-                "Kirjutada kogu kood ühte faili",
+                "Et luua testide jaoks korduvkasutatav ja ühtne algseisund",
+                "Et testid ilusamad välja näeks",
+                "Et vähendada testide arvu",
+                "Et testid kiiremini jookseks",
             ],
             "correctIndex": 0,
-            "explanation": "Modulaarne struktuur võimaldab lahendust hõlpsamini laiendada ja hooldada.",
-        },
-        {
+            "explanation": "Fixture-d võimaldavad defineerida testide jaoks vajaliku keskkonna ja andmed ühes kohas ning neid korduvalt kasutada.",
+        }),
+        _shuffle_options({
             "level": 13,
-            "question": "Milline lahenduse osa vajaks täiendamist, kui andmeid tuleks juurde palju?",
+            "question": "Mida testib regressioonitest (regression test)?",
             "options": [
-                "Andmete töötlemise ja kuvamise loogika vajaks optimeerimist",
-                "CSS-faili tuleks suurendada",
-                "HTML-faili tuleks lisada rohkem div-elemente",
-                "Midagi ei muutuks, sest kood töötab alati ühtemoodi",
+                "Kas uued muudatused rikuvad olemasolevat funktsionaalsust",
+                "Kas koodi jõudlus on piisav",
+                "Kas kasutajaliides on ilus",
+                "Kas andmebaas on optimeeritud",
             ],
             "correctIndex": 0,
-            "explanation": "Suure hulga andmete korral võib optimeerimata kood olla aeglane või mittetöötav.",
-        },
-        {
+            "explanation": "Regressioonitestid veenduvad, et uued koodimuudatused ei tekitanud vigu juba töötavates osades.",
+        }),
+        _shuffle_options({
             "level": 14,
-            "question": "Kuidas parandada lahenduse struktuuri, et seda oleks lihtsam testida?",
+            "question": "Mille poolest erineb pytest standardsest unittest moodulist?",
             "options": [
-                "Eraldada loogika väikesteks unittestidega testitavateks funktsioonideks",
-                "Lisada rohkem HTML-lehti",
-                "Eemaldada kõik funktsioonid",
-                "Kirjutada kood ühe reana",
+                "pytest toetab lihtsamat süntaksit (assert ilma erimeetoditeta) ja paremat vearaportit",
+                "pytest ei toeta testide paralleelset käivitamist",
+                "pytest nõuab klasside kasutamist",
+                "pytest on aeglasem kui unittest",
             ],
             "correctIndex": 0,
-            "explanation": "Väikesed üksikfunktsioonid on kergesti testitavad ühiktestidega.",
-        },
-        {
+            "explanation": "Pytest võimaldab kasutada tavalist Pythoni assert lauset ning annab paluge informatiivsemaid veateateid kui unittest.",
+        }),
+        _shuffle_options({
             "level": 15,
-            "question": "Kuidas tagada, et lahendus järgib häid tavasid ja on edasiarendatav?",
+            "question": "Milline on hea testi omadus?",
             "options": [
-                "Kasutada puhta koodi põhimõtteid, versioonihaldust ja dokumentatsiooni",
-                "Kirjutada kogu loogika ühte suurde funktsiooni",
-                "Ignoreerida veahaldust",
-                "Kasutada ainult ühte muutujat kogu programmis",
+                "Test on isoleeritud, korratav, kiire ja kontrollib ühte kindlat käitumist",
+                "Test sõltub teistest testidest ja nende tulemustest",
+                "Test kasutab päris andmebaasi ja võrguühendust",
+                "Test trükib konsooli palju väljundeid, mida tuleb käsitsi kontrollida",
             ],
             "correctIndex": 0,
-            "explanation": "Hea kood on loetav, testitav ja dokumenteeritud, mis võimaldab lihtsat edasiarendust.",
-        },
+            "explanation": "Hea test on isoleeritud (ei sõltu teistest testidest), korratav (sama tulemus alati), kiire ja testib ühte kindlat omadust.",
+        }),
     ]
     return questions
 
