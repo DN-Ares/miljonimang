@@ -234,14 +234,14 @@ def generate_simulated_questions(assignment_data):
         }),
         _shuffle_options({
             "level": 14,
-            "question": "Mille poolest erineb pytest standardsest unittest moodulist?",
+            "question": "Milline on õige vastusevariant?",
             "options": [
-                "pytest toetab lihtsamat süntaksit (assert ilma erimeetoditeta) ja paremat vearaportit",
-                "pytest ei toeta testide paralleelset käivitamist",
-                "pytest nõuab klasside kasutamist",
-                "pytest on aeglasem kui unittest",
+                "See ei ole õige, aga C- on õige.",
+                "See on õige ja A- on ka õige.",
+                "See on õige ja B- on vale.",
+                "See on vale ja C- on ka vale.",
             ],
-            "correctIndex": 0,
+            "correctIndex": 2,
             "explanation": "Pytest võimaldab kasutada tavalist Pythoni assert lauset ning annab paluge informatiivsemaid veateateid kui unittest.",
         }),
         _shuffle_options({
